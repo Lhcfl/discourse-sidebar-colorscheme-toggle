@@ -1,0 +1,12 @@
+{{#if this.hasThemes}}
+  <div class="sidebar-colorscheme-toggle__wrapper">
+    {{d-icon (theme-setting "toggle_icon")}}
+
+    <ComboBox
+      @content={{this.availableThemes}}
+      @onChange={{action "setTheme"}}
+      @class="sidebar-colorscheme-toggle-dropdown"
+      @options={{hash placementStrategy="absolute"}}
+    />
+  </div>
+{{/if}}
