@@ -1,21 +1,18 @@
-.sidebar-wrapper .sidebar-container {
-    overflow-y: hidden;
-}
-
 .sidebar-footer-actions {
   display: flex;
   align-items: center;
   width: 100%;
+
   @if $hide-theme-name == "true" {
     width: auto;
   }
 }
 
 .sidebar-colorscheme-toggle__wrapper {
+  order: -255;
   display: flex;
   position: relative;
   min-width: 0;
-  order: -499;
   margin-right: auto;
   padding-right: 1em;
 
@@ -34,7 +31,7 @@
       &:active,
       &:hover {
         outline: none;
-        background: var(--d-sidebar-highlight-color);
+        background: var(--d-sidebar-highlight-background);
       }
     }
   }
@@ -47,10 +44,10 @@
     font-size: 0.85em;
     color: var(--primary-medium);
     left: 0.75em;
+
     @if $hide-theme-name == "true" {
       left: 0.5em;
     }
-    bottom: -1px; // optical alignment
     z-index: z("dropdown") + 1;
     pointer-events: none;
   }
@@ -69,6 +66,7 @@
   .select-kit-body {
     // !importants for overriding some inline styles
     width: 16.5em !important;
+
     @if $hide-theme-name == "true" {
       transform: translate(1em, -3em) !important;
       min-width: unset !important;
@@ -77,6 +75,7 @@
 
   &.select-kit.combo-box .select-kit-header {
     padding-left: 3em;
+
     @if $hide-theme-name == "true" {
       padding: 1em;
     }
@@ -86,19 +85,22 @@
     position: relative;
 
     .select-kit-header-wrapper {
-      margin-left: -1.2em;
-      width: calc(100% - 2em);
+      margin-left: -0.5em;
+      width: calc(100% + 0.5em);
     }
 
     .selected-name {
       white-space: nowrap;
       min-width: 0;
+
       @if $hide-theme-name == "true" {
         display: none;
       }
     }
+
     .caret-icon {
       color: var(--primary-low-mid);
+
       @if $hide-theme-name == "true" {
         display: none;
       }
@@ -106,6 +108,7 @@
 
     .name {
       min-width: 0;
+
       @include ellipsis;
     }
   }
@@ -119,15 +122,4 @@
     min-height: calc(100% + 0.25em);
     flex: 1;
   }
-}
-
-
-.sidebar-theme-toggle-dropdown > .select-kit-body {
-    z-index: 9999;
-    position: fixed !important;
-    // position: fixed !important;
-    // bottom: 20px !important;
-    // left: 10px !important;
-    // top: unset !important;
-    // width: 200px !important;
 }
