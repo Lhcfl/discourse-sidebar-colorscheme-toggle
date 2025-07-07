@@ -40,8 +40,9 @@ export default class SidebarThemeToggle extends Component {
   }
 
   @action
-  setTheme(id) {
-    loadColorSchemeStylesheet(id, null, true);
+  async setTheme(id) {
+    await loadColorSchemeStylesheet(id, null, true);
+    this.selectedColorPaletteId = id;
     updateColorSchemeCookie(id);
     this.site?.appEvents?.trigger("sidebar-colorscheme-toggled");
   }
