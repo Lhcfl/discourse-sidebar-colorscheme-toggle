@@ -10,19 +10,25 @@ import {
   updateColorSchemeCookie,
 } from "discourse/lib/color-scheme-picker";
 import cookie from "discourse/lib/cookie";
-import ComboBox from "select-kit/components/combo-box";
+import ColorPalettePicker from "select-kit/components/color-palette-picker";
 
 export default class SidebarThemeToggle extends Component {
   @service site;
   @service currentUser;
   @service session;
+  @service interfaceColor;
 
   @tracked anonColorPaletteId = this.#loadAnonColorPalette();
   @tracked userColorPaletteId = this.session.userColorSchemeId;
   @tracked selectedColorPaletteId = null;
 
-  @tracked availableThemes = listColorSchemes(this.site);
-  @tracked hasThemes = this.availableThemes?.length > 1;
+  get userSelectableThemes() {
+    return listColorSchemes(this.site);
+  }
+
+  get hasThemes() {
+    return this.userSelectableThemes?.length > 1;
+  }
 
   #loadAnonColorPalette() {
     const storedAnonPaletteId = cookie("color_scheme_id");
@@ -40,10 +46,17 @@ export default class SidebarThemeToggle extends Component {
   }
 
   @action
-  async setTheme(id) {
-    await loadColorSchemeStylesheet(id, null, true);
-    this.selectedColorPaletteId = id;
-    updateColorSchemeCookie(id);
+  async setTheme(colorSchemeId) {
+    this.interfaceColor.forceLightMode();
+    await Promise.all([
+      loadColorSchemeStylesheet(colorSchemeId, null, true),
+      loadColorSchemeStylesheet(colorSchemeId, null),
+    ]);
+    this.selectedColorPaletteId = colorSchemeId;
+    updateColorSchemeCookie(colorSchemeId);
+    updateColorSchemeCookie(colorSchemeId, {
+      dark: true,
+    });
     this.site?.appEvents?.trigger("sidebar-colorscheme-toggled");
   }
 
@@ -52,12 +65,12 @@ export default class SidebarThemeToggle extends Component {
       <div class="sidebar-colorscheme-toggle__wrapper">
         {{icon settings.toggle_icon}}
 
-        <ComboBox
-          @content={{this.availableThemes}}
+        <ColorPalettePicker
+          @content={{this.userSelectableThemes}}
           @value={{this.currentPaletteId}}
-          @onChange={{action "setTheme"}}
+          @onChange={{this.setTheme}}
           class="sidebar-colorscheme-toggle-dropdown"
-          @options={{hash placementStrategy="absolute" placement="top-start"}}
+          {{!-- @options={{hash placementStrategy="absolute" placement="top-start"}} --}}
         />
       </div>
     {{/if}}
