@@ -47,16 +47,21 @@ export default class SidebarThemeToggle extends Component {
 
   @action
   async setTheme(colorSchemeId) {
-    this.interfaceColor.forceLightMode();
+    this.selectedColorPaletteId = colorSchemeId;
     await Promise.all([
       loadColorSchemeStylesheet(colorSchemeId, null, true),
       loadColorSchemeStylesheet(colorSchemeId, null),
     ]);
-    this.selectedColorPaletteId = colorSchemeId;
+    const scheme = this.userSelectableThemes?.find((s) => s.id === colorSchemeId);
+    if (scheme?.is_dark) {
+      this.interfaceColor.forceDarkMode();
+      updateColorSchemeCookie(colorSchemeId, { dark: true });
+      this.session.userDarkSchemeId = colorSchemeId;
+    } else {
+      this.interfaceColor.forceLightMode();
+    }
     updateColorSchemeCookie(colorSchemeId);
-    updateColorSchemeCookie(colorSchemeId, {
-      dark: true,
-    });
+    this.session.userColorSchemeId = colorSchemeId;
     this.site?.appEvents?.trigger("sidebar-colorscheme-toggled");
   }
 
